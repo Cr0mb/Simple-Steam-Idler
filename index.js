@@ -15,7 +15,7 @@ if (!username || !password) {
 
 // Default games and status, can be overridden with environment variables
 const games = process.env.games ? process.env.games.split(',').map(Number) : [
-    10, 20, 30, 40, 50, 60, 70, 130, 440, 730, 22330, 22380, 33230, 238960, 48190, 109600, 1085660, 1857950
+    10, 20, 30, 40, 50, 60, 70, 130, 440, 730, 22330, 22380, 33230, 238960, 48190, 109600, 1085660, 1857950, 105600
 ];
 const status = process.env.status ? parseInt(process.env.status, 10) : 1; // Default to "online"
 
