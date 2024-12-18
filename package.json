@@ -1,7 +1,7 @@
 {
   "name": "simple-steam-idler",
-  "version": "1.0.0",
-  "description": "24/7 Steam ingame time idler (simple version)",
+  "version": "1.5.0",
+  "description": "A simple tool to keep your Steam account active by simulating gameplay.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -10,12 +10,9 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Cr0mb/simple-steam-idler.git"
+    "url": "https://github.com/Cr0mb/Simple-Steam-Idler.git"
   },
-  "bugs": {
-    "url": "https://github.com/Cr0mb/simple-steam-idler/issues"
-  },
-  "homepage": "https://github.com/Cr0mb/simple-steam-idler",
+  "homepage": "https://github.com/Cr0mb/Simple-Steam-Idler",
   "dependencies": {
     "steam-user": "^4.24.0",
     "steam-totp": "^2.1.2",
