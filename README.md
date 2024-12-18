@@ -1,3 +1,6 @@
+![image](https://github.com/user-attachments/assets/d6d0033a-feb2-45ed-857b-68342af22124)
+
+
 # Simple Steam Idler
 
 This was forked from *Gunthersuper/simple-steam-idler-replit*.
