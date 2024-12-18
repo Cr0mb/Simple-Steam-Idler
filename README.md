@@ -13,7 +13,7 @@ This is a simple Steam idler designed for idling hours on your Steam account. Th
 
 ## Requirements
 1. **Steam Credentials**
-   - Your Steam **username**, **password**, and **shared secret** (used for Steam Guard 2FA).
+   - Your Steam **username**, **password**.
 2. **Accounts on the following platforms:**
    - [Render](https://render.com) - for hosting the idler.
    - [UptimeRobot](https://uptimerobot.com) - to keep the service awake.
@@ -39,7 +39,6 @@ Under "Environment Variables," add the following:
 ```
 USERNAME = Your Steam username
 PASSWORD = Your Steam password
-SHARED_SECRET = Your Steam Guard shared secret
 ```
 
 Deploy the service.
