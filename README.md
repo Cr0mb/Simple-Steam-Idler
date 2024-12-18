@@ -1,54 +1,37 @@
 # Simple Steam Idler
 
-This was forked from *Gunthersuper/simple-steam-idler-replit*. I have updated as to work with email instead of phone 2fa verification it uses gmail verification. Works on replit and render (render only if have access to shell.)
+This was forked from *Gunthersuper/simple-steam-idler-replit*.
 
-This is a simple Steam idler designed for idling hours on your Steam account. This fork utilizes [Render](https://render.com) and [UptimeRobot](https://uptimerobot.com) to keep the idler running 24/7.
+This script automatically logs into Steam using provided credentials, tracks the idle time, and sets the user's status and games. Additionally, it includes a keep-alive HTTP server and supports graceful shutdowns.
 
-## Features
-- Automates Steam hour idling
-- Easy to deploy on Render
-- Environment variables for secure credential storage
+# Features
+- Automatic Login: Logs into Steam using provided ``username`` and ``password`` from environment variables.
+- Steam Guard: Prompts the user for the Steam Guard code if necessary.
+- Game Play Status: Automatically sets the Steam status (online/invisible) and plays a set of default or custom games.
+- Idle Time Tracker: Tracks the idle time of the Steam client and stores it in a file, which is updated every second.
+- Keep-Alive Server: Starts a simple HTTP server to keep the script alive, accessible on the local machine's IP address at port 80.
+- Graceful Shutdown: Handles script termination gracefully by saving the final idle time and logging off Steam.
 
----
+# Prerequisites
+> Node.js (version 12 or higher)
+> steam-user package (for Steam login and interaction)
 
-## Requirements
-1. **Steam Credentials**
-   - Your Steam **username**, **password**.
-2. **Accounts on the following platforms:**
-   - [Render](https://render.com) - for hosting the idler.
-   - [UptimeRobot](https://uptimerobot.com) - to keep the service awake.
-
----
-
-## Setup Instructions
-
-### 1. Clone the Repository
-Fork and clone the repository to your preferred platform:
-```bash
-git clone https://github.com/your-username/simple-steam-idler
-cd simple-steam-idler
-```
-
-##E# 2. Deploy to Render
-Sign up or log in to Render.
-
-Create a new Web Service and connect it to your forked repository.
-
-Under "Environment Variables," add the following:
+- Install the required dependencies using npm:
 
 ```
-USERNAME = Your Steam username
-PASSWORD = Your Steam password
+npm install steam-user readline
 ```
 
-Deploy the service.
+-  Setting Environment Variables in a Terminal/Command Promp type these commands:
 
-3. Keep the Service Online with UptimeRobot
-Sign up or log in to UptimeRobot.
-Create a new HTTP(s) Monitor:
-Monitor Type: HTTP(s)
-Friendly Name: Steam Idler
-URL (or IP): Your Render service's public URL.
-Monitoring Interval: 5 minutes.
-Save the monitor to keep the Render service alive.
+```
+export username="yourSteamUsername"
+export password="yourSteamPassword"
+```
+
+# run script
+
+```
+node index.js
+```
 
