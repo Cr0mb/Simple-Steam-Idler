@@ -50,33 +50,36 @@ const saveIdleTime = () => {
 };
 
 const handleSteamGuard = (domain, callback) => {
-    console.log(Steam Guard code sent to your email${domain ?  (${domain}) : ''});
+    console.log(`Steam Guard code sent to your email${domain ? ` (${domain})` : ''}`);
     rl.question('Enter the Steam Guard code: ', (code) => {
         callback(code);
         rl.close();
     });
 };
 
+console.log("Steam Idler");
+console.log("Made by Cr0mb");
+
 user.on('loggedOn', () => {
-    console.log(Successfully logged in as: ${user.steamID});
+    console.log(`Successfully logged in as: ${user.steamID}`);
     user.setPersona(status);
     user.gamesPlayed(games);
-    console.log(Status set to ${status === 1 ? "online" : "invisible"} and playing games: ${games});
+    console.log(`Status set to ${status === 1 ? "online" : "invisible"} and playing games: ${games}`);
 
     const idleTimer = setInterval(() => {
         idleTime++;
         const hours = Math.floor(idleTime / 3600);
         const minutes = Math.floor((idleTime % 3600) / 60);
         const seconds = idleTime % 60;
-        const idleOutput = Idle time: ${hours} hours, ${minutes} minutes, ${seconds} seconds;
+        const idleOutput = `Idle time: ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
 
-        process.stdout.write(\r${idleOutput});
+        process.stdout.write(`\r${idleOutput}`);
         saveIdleTime();
     }, 1000);
 });
 
 user.on('error', (err) => {
-    console.error(Error: ${err.message});
+    console.error(`Error: ${err.message}`);
     process.exit(1);
 });
 
@@ -105,7 +108,7 @@ http.createServer((req, res) => {
     res.write("I'm alive");
     res.end();
 }).listen(80, () => {
-    console.log(Keep-alive server running at http://${localIp}:80);
+    console.log(`Keep-alive server running at http://${localIp}:80`);
 });
 
 const gracefulShutdown = () => {
