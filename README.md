@@ -1,5 +1,7 @@
 # Simple Steam Idler
 
+This was forked from *Gunthersuper/simple-steam-idler-replit*. I have updated as to work with email instead of phone 2fa verification it uses gmail verification. Works on replit and render (render only if have access to shell.)
+
 This is a simple Steam idler designed for idling hours on your Steam account. This fork utilizes [Render](https://render.com) and [UptimeRobot](https://uptimerobot.com) to keep the idler running 24/7.
 
 ## Features
