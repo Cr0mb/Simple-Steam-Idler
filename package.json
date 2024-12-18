@@ -1,5 +1,5 @@
 {
-  "name": "simple-steam-idler",
+  "name": "Simple-Steam-Idler",
   "version": "1.5.0",
   "description": "A simple tool to keep your Steam account active by simulating gameplay.",
   "main": "index.js",
