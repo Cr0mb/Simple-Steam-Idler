@@ -4,13 +4,21 @@
   "description": "24/7 Steam ingame time idler (simple version)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "https://github.com/Gunthersuper",
+  "author": "Cr0mb (https://github.com/Cr0mb)",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cr0mb/simple-steam-idler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Cr0mb/simple-steam-idler/issues"
+  },
+  "homepage": "https://github.com/Cr0mb/simple-steam-idler",
   "dependencies": {
+    "steam-user": "^4.24.0",
     "steam-totp": "^2.1.2",
-    "steam-user": "^4.24.0"
+    "readline": "^1.3.0"
   }
 }
