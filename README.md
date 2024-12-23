@@ -38,3 +38,14 @@ export password="yourSteamPassword"
 node index.js
 ```
 
+
+# What was updated:
+
+1. The script now checks if username and password are set in environment variables. If they aren't, it throws an error and terminates the script.
+2. The list of games to play can now be passed as a comma-separated string in the games environment variable. If not provided, a default set of games is used.
+3. The bot now tracks the idle time in seconds and saves this information to a idle_time.json file. This allows the bot to resume tracking the idle time even after it has been restarted.
+4. The bot now handles Steam Guard authentication with an interactive prompt that asks the user to enter the code sent to their email.
+5. HTTP Keep-Alive Server Information is now printed to the screen.
+6. The bot now handles SIGINT (Ctrl+C) gracefully by logging off, stopping the idle timer, saving the idle time, and exiting cleanly.
+
+
