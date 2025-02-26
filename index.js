@@ -4,128 +4,147 @@ const http = require('http');
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
-const username = process.env.username;
-const password = process.env.password;
+let username = process.env.username;
+let password = process.env.password;
 
-if (!username || !password) {
-    console.error("Error: Please set the 'username' and 'password' environment variables.");
-    process.exit(1);
-}
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
-// Default games and status, can be overridden with environment variables
-const games = process.env.games ? process.env.games.split(',').map(Number) : [
-    10, 20, 30, 40, 50, 60, 70, 130, 440, 730, 22330, 22380, 33230, 238960, 48190, 109600, 1085660, 1857950, 105600
-];
-const status = process.env.status ? parseInt(process.env.status, 10) : 1; // Default to "online"
-
-const user = new steamUser();
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-let idleTime = 0;
-const idleFilePath = path.join(__dirname, 'idle_time.json');
-
-if (fs.existsSync(idleFilePath)) {
-    try {
-        const data = JSON.parse(fs.readFileSync(idleFilePath, 'utf8'));
-        if (data.idleTime) {
-            idleTime = data.idleTime;
-        }
-    } catch (err) {
-        console.error('Error reading idle time file:', err.message);
-    }
-}
-
-const saveIdleTime = () => {
-    try {
-        const data = { idleTime };
-        fs.writeFileSync(idleFilePath, JSON.stringify(data, null, 2), 'utf8');
-    } catch (err) {
-        console.error('Error saving idle time:', err.message);
+const askCredentials = (callback) => {
+    if (!username) {
+        rl.question('Enter your Steam username: ', (userInput) => {
+            username = userInput;
+            askPassword(callback);
+        });
+    } else {
+        askPassword(callback);
     }
 };
 
-const handleSteamGuard = (domain, callback) => {
-    console.log(`Steam Guard code sent to your email${domain ? ` (${domain})` : ''}`);
-    rl.question('Enter the Steam Guard code: ', (code) => {
-        callback(code);
-        rl.close();
+const askPassword = (callback) => {
+    if (!password) {
+        rl.question('Enter your Steam password: ', (passInput) => {
+            password = passInput;
+            callback();
+        });
+    } else {
+        callback();
+    }
+};
+
+const askPort = (callback) => {
+    rl.question('Enter the port number for the HTTP server: ', (portInput) => {
+        const port = parseInt(portInput, 10) || 80;
+        try {
+            const ufwStatus = execSync(`sudo ufw status`, { encoding: 'utf8' });
+            if (!ufwStatus.includes(port.toString())) {
+                console.log(`Adding UFW rule for port ${port}...`);
+                execSync(`sudo ufw allow ${port}`);
+            }
+        } catch (err) {
+            console.error('Error checking or setting UFW rule:', err.message);
+        }
+        callback(port);
     });
 };
 
-console.log("Steam Idler");
-console.log("Made by Cr0mb");
+askCredentials(() => {
+    askPort((port) => {
+        const status = process.env.status ? parseInt(process.env.status, 10) : 1;
+        const user = new steamUser();
+        let idleTime = 0;
+        const idleFilePath = path.join(__dirname, 'idle_time.json');
 
-user.on('loggedOn', () => {
-    console.log(`Successfully logged in as: ${user.steamID}`);
-    user.setPersona(status);
-    user.gamesPlayed(games);
-    console.log(`Status set to ${status === 1 ? "online" : "invisible"} and playing games: ${games}`);
-
-    const idleTimer = setInterval(() => {
-        idleTime++;
-        const hours = Math.floor(idleTime / 3600);
-        const minutes = Math.floor((idleTime % 3600) / 60);
-        const seconds = idleTime % 60;
-        const idleOutput = `Idle time: ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-
-        process.stdout.write(`\r${idleOutput}`);
-        saveIdleTime();
-    }, 1000);
-});
-
-user.on('error', (err) => {
-    console.error(`Error: ${err.message}`);
-    process.exit(1);
-});
-
-user.on('steamGuard', handleSteamGuard);
-
-user.logOn({
-    accountName: username,
-    password: password
-});
-
-const getLocalIpAddress = () => {
-    const interfaces = os.networkInterfaces();
-    for (const interfaceName in interfaces) {
-        for (const address of interfaces[interfaceName]) {
-            if (address.family === 'IPv4' && !address.internal) {
-                return address.address;
+        if (fs.existsSync(idleFilePath)) {
+            try {
+                const data = JSON.parse(fs.readFileSync(idleFilePath, 'utf8'));
+                if (data.idleTime) idleTime = data.idleTime;
+            } catch (err) {
+                console.error('Error reading idle time file:', err.message);
             }
         }
-    }
-    return '127.0.0.1';
-};
 
-const localIp = getLocalIpAddress();
+        const saveIdleTime = () => {
+            try {
+                fs.writeFileSync(idleFilePath, JSON.stringify({ idleTime }, null, 2), 'utf8');
+            } catch (err) {
+                console.error('Error saving idle time:', err.message);
+            }
+        };
 
-http.createServer((req, res) => {
-    res.write("I'm alive");
-    res.end();
-}).listen(80, () => {
-    console.log(`Keep-alive server running at http://${localIp}:80`);
+        const handleSteamGuard = (domain, callback) => {
+            console.log(`Steam Guard code sent to your email${domain ? ` (${domain})` : ''}`);
+            rl.question('Enter the Steam Guard code: ', (code) => {
+                callback(code);
+                rl.close();
+            });
+        };
+
+        console.log("Steam Idler\nMade by Cr0mb");
+
+        // Define gameList globally to avoid scope issues
+        const gameList = [10, 20, 30, 40, 50, 60, 70, 130, 440, 730, 22330, 22380, 33230, 238960, 48190, 109600, 1085660, 1857950, 105600];
+
+        user.on('loggedOn', () => {
+            console.log(`Successfully logged in as: ${user.steamID}`);
+            user.setPersona(status);
+            user.gamesPlayed(gameList);
+            console.log(`Status set to ${status === 1 ? "online" : "invisible"}`);
+            console.log(`Currently playing the following games: ${gameList.join(", ")}`);
+
+            setInterval(() => {
+                idleTime++;
+                saveIdleTime();
+
+                const hours = Math.floor(idleTime / 3600);
+                const minutes = Math.floor((idleTime % 3600) / 60);
+                const seconds = idleTime % 60;
+
+                process.stdout.write(`Idle Time: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}\r`);
+            }, 1000);
+        });
+
+        user.on('error', (err) => {
+            console.error(`Error: ${err.message}`);
+            process.exit(1);
+        });
+
+        user.on('steamGuard', handleSteamGuard);
+        user.logOn({ accountName: username, password: password });
+
+        const getLocalIpAddress = () => {
+            const interfaces = os.networkInterfaces();
+            for (const interfaceName in interfaces) {
+                for (const address of interfaces[interfaceName]) {
+                    if (address.family === 'IPv4' && !address.internal) return address.address;
+                }
+            }
+            return '127.0.0.1';
+        };
+
+        const localIp = getLocalIpAddress();
+
+        http.createServer((req, res) => {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+                status: status === 1 ? "online" : "invisible",
+                idleTime: idleTime,
+                steamID: user.steamID ? user.steamID.toString() : "Not logged in",
+                currentGames: gameList,
+                loginTime: new Date().toISOString()
+            }, null, 2));
+        }).listen(port, () => {
+            console.log(`Server running at http://${localIp}:${port}`);
+        });
+
+        const gracefulShutdown = () => {
+            console.log('\nGracefully shutting down...');
+            user.logOff();
+            saveIdleTime();
+            process.exit(0);
+        };
+
+        process.on('SIGINT', gracefulShutdown);
+    });
 });
-
-const gracefulShutdown = () => {
-    console.log('\nGracefully shutting down...');
-    user.logOff();
-    clearInterval(idleTimer);
-    saveIdleTime();
-    process.exit(0);
-};
-
-process.on('SIGINT', gracefulShutdown);
-
-const ensureDirectoriesExist = (filePath) => {
-    const dir = path.dirname(filePath);
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-};
-
-ensureDirectoriesExist(idleFilePath);
