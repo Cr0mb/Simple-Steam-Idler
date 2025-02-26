@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/d6d0033a-feb2-45ed-857b-68342af22124)
+![image](https://github.com/user-attachments/assets/10816210-e723-4952-bf99-7b4035e12369)
 
 
 # Simple Steam Idler
@@ -7,13 +7,12 @@ This was forked from *Gunthersuper/simple-steam-idler-replit*.
 
 This script automatically logs into Steam using provided credentials, tracks the idle time, and sets the user's status and games. Additionally, it includes a keep-alive HTTP server and supports graceful shutdowns.
 
-# Features
-- Automatic Login: Logs into Steam using provided ``username`` and ``password`` from environment variables.
-- Steam Guard: Prompts the user for the Steam Guard code if necessary.
-- Game Play Status: Automatically sets the Steam status (online/invisible) and plays a set of default or custom games.
-- Idle Time Tracker: Tracks the idle time of the Steam client and stores it in a file, which is updated every second.
-- Keep-Alive Server: Starts a simple HTTP server to keep the script alive, accessible on the local machine's IP address at port 80.
-- Graceful Shutdown: Handles script termination gracefully by saving the final idle time and logging off Steam.
+## Features
+- Logs into steam using provided credentials
+- Idles in predefined Steam games
+- Tracks idle time and saves it persistently
+- Hosts an HTTP server displaying current status, idle time, and games being idled
+- Automatically configures UFW to allow the selected HTTP port
 
 # Prerequisites
 > Node.js (version 12 or higher)
