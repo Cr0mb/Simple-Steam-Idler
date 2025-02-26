@@ -47,4 +47,14 @@ node index.js
 5. HTTP Keep-Alive Server Information is now printed to the screen.
 6. The bot now handles SIGINT (Ctrl+C) gracefully by logging off, stopping the idle timer, saving the idle time, and exiting cleanly.
 
-
+## API Endpoint
+- The HTTP server provides a JSON response with the following fields:
+```
+{
+  "status": "online",
+  "idleTime": 3600,
+  "steamID": "76561198000000000",
+  "currentGames": [10, 20, 30, 40],
+  "loginTime": "2025-02-25T12:00:00Z"
+}
+```
