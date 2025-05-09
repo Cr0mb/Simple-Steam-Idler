@@ -1,6 +1,11 @@
 ![image](https://github.com/user-attachments/assets/10816210-e723-4952-bf99-7b4035e12369)
 
 
+## Update
+
+- Restarts itself every hour to avoid sticking.
+
+
 # Simple Steam Idler
 
 This was forked from *Gunthersuper/simple-steam-idler-replit*.
